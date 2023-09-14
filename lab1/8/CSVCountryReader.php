@@ -1,6 +1,6 @@
 <?php
-include "../3. Article/Country.php";
-include "../3. Article/Countries.php";
+include "../3. Country/Country.php";
+include "../3. Country/Countries.php";
 include "../7/CSVReader.php";
 
 class CSVCountryReader extends CSV {
