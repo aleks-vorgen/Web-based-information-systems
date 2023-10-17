@@ -1,5 +1,5 @@
 /Отчеты/
 /.idea/
 /lab1/.idea/
-/lab3/5/log.csv
-/lab3/4/log.txt
+*.csv
+*.txt
