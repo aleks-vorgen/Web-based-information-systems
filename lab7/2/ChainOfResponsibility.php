@@ -65,4 +65,6 @@ $errorPaymentHandler = new ErrorPaymentHandler();
 
 $accountHandler->setNext($creditHandler)->setNext($errorPaymentHandler);
 
+echo $accountHandler->handle(500);
+echo $accountHandler->handle(1000);
 echo $accountHandler->handle(1100);
