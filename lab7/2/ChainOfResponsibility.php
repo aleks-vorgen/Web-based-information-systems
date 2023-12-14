@@ -1,32 +1,68 @@
 <?php
 
-class PaymentHandler
-{
-    private int $accountBalance = 500;
-    private int $creditCardBalance = 1000;
+interface Handler {
+    function setNext(Handler $handler): Handler;
+    function handle(string $request): ?string;
+}
 
-    public function processPayment($amount): void
-    {
-        switch ($amount) {
-            case $this->accountBalance >= $amount: {
-                echo "Оплата здійснюється з основного рахунку. Сума: $amount грн.\n";
-                $this->accountBalance -= $amount;
-                break;
-            }
-            case $this->creditCardBalance >= $amount: {
-                echo "Оплата здійснюється з кредитної картки. Сума: $amount грн.\n";
-                $this->creditCardBalance -= $amount;
-                break;
-            }
-            default: {
-                echo "Оплату відхилено: недостатньо коштів на рахунку та кредитній картці.\n";
-            }
+abstract class AbstractHandler implements Handler {
+    private Handler $nextHandler;
+
+    public function setNext(Handler $handler): Handler {
+        $this->nextHandler = $handler;
+        return $handler;
+    }
+
+    public function handle(string $request): ?string {
+        if ($this->nextHandler) {
+            return $this->nextHandler->handle($request);
+        }
+
+        return null;
+    }
+
+
+}
+
+class AccountPaymentHandler extends AbstractHandler {
+
+    private int $balance = 500;
+
+    public function handle($request): ?string {
+        if ($this->balance >= $request) {
+            $this->balance -= $request;
+            return "Оплата здійснюється з основного рахунку. Сума: $request грн.\n";
+        } else {
+            return parent::handle($request);
         }
     }
 }
 
-$handler = new PaymentHandler();
+class CreditPaymentHandler extends AbstractHandler {
+    private int $balance = 1000;
 
-$handler->processPayment(500);
-$handler->processPayment(1000);
-$handler->processPayment(1100);
+    function handle($request): ?string {
+        if ($this->balance >= $request) {
+            $this->balance -= $request;
+            return "Оплата здійснюється з кредитної картки. Сума: $request грн.\n";
+        }
+        else {
+            return parent::handle($request);
+        }
+    }
+}
+
+class ErrorPaymentHandler extends AbstractHandler {
+    public function handle(string $request): ?string {
+        return "Оплату відхилено: недостатньо коштів на рахунку та кредитній картці.\n";
+    }
+
+}
+
+$accountHandler = new AccountPaymentHandler();
+$creditHandler = new CreditPaymentHandler();
+$errorPaymentHandler = new ErrorPaymentHandler();
+
+$accountHandler->setNext($creditHandler)->setNext($errorPaymentHandler);
+
+echo $accountHandler->handle(1100);
