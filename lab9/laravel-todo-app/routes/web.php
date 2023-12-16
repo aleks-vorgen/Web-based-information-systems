@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\todoController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\TodoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,5 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('todos', todoController::class);
+Route::resource('todos', TodoController::class);
 Route::get('todos/{todo}', [todoController::class, 'destroy'])->name('todos.destroy');
+
+Route::resource('countries', CountryController::class);
