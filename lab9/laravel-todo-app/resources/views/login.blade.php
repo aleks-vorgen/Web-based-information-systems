@@ -30,7 +30,7 @@
     </div>
 </div>
 <div class="w-75 m-auto text-center">
-    <h1>Реєстрація</h1>
+    <h1>Авторизація</h1>
     <form action="{{route('auth.doLogin')}}" class="w-50 m-auto" method="POST">
         @csrf
         <input type="email" name="email" class="form-control my-3" placeholder="Email">
